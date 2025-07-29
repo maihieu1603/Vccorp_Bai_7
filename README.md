@@ -30,14 +30,13 @@
 
 ```bash
 git clone https://github.com/maihieu1603/Vccorp_Bai_7.git
-
 cd Vccorp_Bai_7
 ```
 
 ### 2. Build dự án (sử dụng Maven)
 
 ```bash
-mvn clean install
+mvn clean package
 ```
 
 ### 3. Chạy server
@@ -54,45 +53,81 @@ Server sẽ chạy mặc định tại cổng `8080`.
 
 ### 🟢 Đăng nhập
 
-```http:
+```http
 POST /login
-Params: username, password
-Response Headers: AccessToken, RefreshToken
+Body (x-www-form-urlencoded):
+  username=alice
+  password=123456
 ```
-1 số tài khoản: alice, bob, charlie
-mật khẩu đều là 123456
+
+📌 Một số tài khoản mẫu: `alice`, `bob`, `charlie`  
+🔑 Mật khẩu cho tất cả: `123456`  
+📥 Sau khi đăng nhập, bạn sẽ nhận được `AccessToken` và `RefreshToken` trong response header.
+
+---
+
 ### 📘 Danh sách bạn bè
 
 ```http
 GET /friends
-Headers: Authorization: {AccessToken}
-```
-
-### ✉️ Gửi tin nhắn
-Login với tài khoản alice
-```http
-POST /message/send
 Headers:
   Authorization: {AccessToken}
-Body (multipart/form-data):
-  username: tên người nhận
-  message: nội dung
-  file: (tùy chọn)
-```
-
-### ⏳ Nhận tin nhắn mới (long polling)
-
-```http
-GET /message/new
-Headers: Authorization: {AccessToken}
-Response: JSON danh sách tin nhắn
-```
-
-### 📁 Tải file
-
-```http
-GET /file/{filename}
-Headers: Authorization: {AccessToken}
 ```
 
 ---
+
+### ✉️ Gửi tin nhắn (tài khoản: alice)
+
+**Bước 1: Đăng nhập tài khoản alice**
+```bash
+curl -X POST http://localhost:8080/login \
+  -d "username=alice" -d "password=123456" -i
+```
+→ Copy giá trị `AccessToken` trong response header.
+
+**Bước 2: Gửi tin nhắn cho bob**
+```bash
+curl -X POST http://localhost:8080/message/send \
+  -H "Authorization: {AccessToken_Of_Alice}" \
+  -F "username=bob" \
+  -F "message=Hello Bob!" \
+  -F "file=@path/to/file.txt"
+```
+
+---
+
+### ⏳ Nhận tin nhắn mới (tài khoản: bob)
+
+**Bước 1: Đăng nhập tài khoản bob**
+```bash
+curl -X POST http://localhost:8080/login \
+  -d "username=bob" -d "password=123456" -i
+```
+→ Copy giá trị `AccessToken` trong response header.
+
+**Bước 2: Lấy tin nhắn mới bằng long polling**
+```bash
+curl -X GET http://localhost:8080/message/new \
+  -H "Authorization: {AccessToken_Of_Bob}"
+```
+
+📌 Long polling sẽ giữ kết nối tối đa 10 giây nếu chưa có tin nhắn.
+
+---
+
+### 📁 Tải file đính kèm
+
+```http
+GET /file/{filename}
+Headers:
+  Authorization: {AccessToken}
+```
+
+---
+
+## 📦 Ghi chú
+
+- Hệ thống kiểm tra token theo IP của thiết bị.
+- Nếu `AccessToken` hết hạn, dùng `RefreshToken` để lấy token mới.
+- Nếu cả hai token hết hạn → cần đăng nhập lại.
+
