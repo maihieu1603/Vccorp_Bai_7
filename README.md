@@ -85,14 +85,24 @@ curl -X POST http://localhost:8080/login \
 ```
 → Copy giá trị `AccessToken` trong response header.
 
-**Bước 2: Gửi tin nhắn cho bob**
+**Bước 2: Gửi tin nhắn cho bob (không kèm file)**
 ```bash
 curl -X POST http://localhost:8080/message/send \
   -H "Authorization: {AccessToken_Of_Alice}" \
   -F "username=bob" \
-  -F "message=Hello Bob!" \
-  -F "file=@path/to/file.txt"
+  -F "message=Hello Bob!"
 ```
+
+**Bước 3: Gửi tin nhắn kèm file**
+```bash
+curl -X POST http://localhost:8080/message/send \
+  -H "Authorization: {AccessToken_Of_Alice}" \
+  -F "username=bob" \
+  -F "message=Gửi file cho bạn nè" \
+  -F "file=@path/to/ten_file.txt"
+```
+
+📎 `file` là tùy chọn, bạn có thể upload bất kỳ file nào như `.jpg`, `.pdf`, `.docx`, v.v.
 
 ---
 
@@ -123,6 +133,12 @@ Headers:
   Authorization: {AccessToken}
 ```
 
+Ví dụ:
+```bash
+curl -O -J -L http://localhost:8080/file/example.pdf \
+  -H "Authorization: {AccessToken}"
+```
+
 ---
 
 ## 📦 Ghi chú
@@ -130,4 +146,5 @@ Headers:
 - Hệ thống kiểm tra token theo IP của thiết bị.
 - Nếu `AccessToken` hết hạn, dùng `RefreshToken` để lấy token mới.
 - Nếu cả hai token hết hạn → cần đăng nhập lại.
+- Server mặc định lưu file vào thư mục `storage/` trong dự án.
 
