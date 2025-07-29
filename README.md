@@ -43,24 +43,10 @@ mvn clean install
 ### 3. Chạy server
 
 ```bash
-java -jar target/Vccorp_Bai_7.jar
+java -jar target/ChatApp-jar-with-dependencies.jar
 ```
 
 Server sẽ chạy mặc định tại cổng `8080`.
-
----
-
-## 🔐 Authentication Flow
-
-* `POST /login?username=...&password=...`
-
- * Trả về: `AccessToken` và `RefreshToken` trong response header
-
-* Tất cả API phía sau đều bắt buộc gửi header:
-
-  ```http
-  Authorization: {AccessToken}
-  ```
 
 ---
 
@@ -68,12 +54,13 @@ Server sẽ chạy mặc định tại cổng `8080`.
 
 ### 🟢 Đăng nhập
 
-```http
+```http:
 POST /login
 Params: username, password
 Response Headers: AccessToken, RefreshToken
 ```
-
+1 số tài khoản: alice, bob, charlie
+mật khẩu đều là 123456
 ### 📘 Danh sách bạn bè
 
 ```http
@@ -82,7 +69,7 @@ Headers: Authorization: {AccessToken}
 ```
 
 ### ✉️ Gửi tin nhắn
-
+Login với tài khoản alice
 ```http
 POST /message/send
 Headers:
@@ -109,31 +96,3 @@ Headers: Authorization: {AccessToken}
 ```
 
 ---
-
-## ✅ TODO (phát triển thêm)
-
-* [ ] API đăng ký tài khoản
-* [ ] API logout
-* [ ] API đổi mật khẩu
-* [ ] WebSocket (thay thế long polling)
-* [ ] Phân quyền theo vai trò (Admin/User)
-
----
-
-## 🧪 Chạy Unit Test
-
-```bash
-mvn test
-```
-
----
-
-## 👤 Tác giả
-
-**Your Name** – [@yourgithub](https://github.com/yourgithub)
-
----
-
-## 📄 License
-
-MIT License
