@@ -29,8 +29,9 @@
 ### 1. Clone dự án
 
 ```bash
-git clone https://github.com/your-username/chat-api-spark.git
-cd chat-api-spark
+git clone https://github.com/maihieu1603/Vccorp_Bai_7.git
+
+cd Vccorp_Bai_7
 ```
 
 ### 2. Build dự án (sử dụng Maven)
@@ -42,7 +43,7 @@ mvn clean install
 ### 3. Chạy server
 
 ```bash
-java -jar target/chat-api-spark.jar
+java -jar target/Vccorp_Bai_7.jar
 ```
 
 Server sẽ chạy mặc định tại cổng `8080`.
